@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project VanamMate: Human-Elephant Conflict Infographic</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px; 
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F9FAF5; /* Creamy Off-white Background */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Mobile height */
+            max-height: 400px;
+        }
+        @media (min-width: 640px) {
+            .chart-container {
+                height: 350px; /* Desktop height */
+            }
+        }
+        .kpi-card {
+            background-color: #FFFFFF;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .kpi-number {
+            font-size: 2.5rem; /* Mobile font size */
+            font-weight: 900;
+            line-height: 1;
+        }
+        @media (min-width: 640px) {
+            .kpi-number {
+                font-size: 3rem; /* Desktop font size */
+            }
+        }
+        .flow-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+        }
+         @media (min-width: 768px) {
+            .flow-circle {
+                width: 120px;
+                height: 120px;
+                font-size: 1.1rem;
+            }
+        }
+        .flow-arrow {
+            font-size: 2rem;
+            font-weight: 900;
+            transform: rotate(90deg);
+        }
+        @media (min-width: 768px) {
+            .flow-arrow {
+                 transform: rotate(0deg);
+                 font-size: 2.5rem;
+            }
+        }
+        .hero-section {
+            background-image: url('hero.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 50vh;
+        }
+        @media (min-width: 640px) {
+             .hero-section {
+                height: 60vh;
+            }
+        }
+        .data-input-card {
+            background-color: #FFFFFF;
+            border-left: 4px solid;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+        .nav-link {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex-shrink-0">
+                    <a href="#" class="flex items-center">
+                        <img class="h-12 w-auto" src="logo.png" alt="VanamMate Logo">
+                    </a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#solution" class="nav-link text-gray-700 hover:bg-green-100 hover:text-green-900 px-3 py-2 rounded-md text-sm font-medium">Our Solutions</a>
+                        <a href="#crisis" class="nav-link text-gray-700 hover:bg-green-100 hover:text-green-900 px-3 py-2 rounded-md text-sm font-medium">Active Hotspots</a>
+                        <a href="#roadmap" class="nav-link text-gray-700 hover:bg-green-100 hover:text-green-900 px-3 py-2 rounded-md text-sm font-medium">Our Work</a>
+                        <a href="#contact" class="nav-link text-gray-700 hover:bg-green-100 hover:text-green-900 px-3 py-2 rounded-md text-sm font-medium">Contact Us</a>
+                    </div>
+                </div>
+                <div class="-mr-2 flex md:hidden">
+                    <button id="mobile-menu-button" type="button" class="bg-green-800 inline-flex items-center justify-center p-2 rounded-md text-green-200 hover:text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-800 focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#solution" class="nav-link text-gray-700 hover:bg-green-100 hover:text-green-900 block px-3 py-2 rounded-md text-base font-medium">Our Solutions</a>
+                <a href="#crisis" class="nav-link text-gray-700 hover:bg-green-100 hover:text-green-900 block px-3 py-2 rounded-md text-base font-medium">Active Hotspots</a>
+                <a href="#roadmap" class="nav-link text-gray-700 hover:bg-green-100 hover:text-green-900 block px-3 py-2 rounded-md text-base font-medium">Our Work</a>
+                <a href="#contact" class="nav-link text-gray-700 hover:bg-green-100 hover:text-green-900 block px-3 py-2 rounded-md text-base font-medium">Contact Us</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section relative">
+        <div class="absolute inset-0 bg-black opacity-50"></div>
+        <div class="relative max-w-7xl mx-auto h-full flex flex-col items-center justify-center text-center px-4">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-tight" style="color: #F9FAF5;">Project VanamMate</h1>
+            <p class="text-lg sm:text-xl md:text-2xl mt-4 font-semibold text-white">An Integrated Socio-Technical Framework for Human-Elephant Coexistence</p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+
+        <section id="crisis" class="mb-20">
+            <h2 class="text-3xl font-bold text-center mb-2" style="color: #2A553A;">An Escalating Statewide Crisis</h2>
+            <p class="text-center text-lg max-w-3xl mx-auto mb-12">Human-Elephant Conflict (HEC) in Tamil Nadu has reached a critical tipping point, exacting a severe toll on human lives, rural livelihoods, and the state's elephant population.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div class="kpi-card" style="border-top: 5px solid #FF6B6B;">
+                    <div class="kpi-number" style="color: #FF6B6B;">256</div>
+                    <div class="kpi-label">Human Fatalities</div>
+                    <p class="text-sm text-gray-500 mt-1">In the Last 5 Years</p>
+                </div>
+                <div class="kpi-card" style="border-top: 5px solid #FF9F1C;">
+                    <div class="kpi-number" style="color: #FF9F1C;">61</div>
+                    <div class="kpi-label">Human Fatalities</div>
+                    <p class="text-sm text-gray-500 mt-1">In 2023-24 Alone</p>
+                </div>
+                <div class="kpi-card" style="border-top: 5px solid #4CAF50;">
+                    <div class="kpi-number" style="color: #4CAF50;">13,818</div>
+                    <div class="kpi-label">Major Incidents</div>
+                    <p class="text-sm text-gray-500 mt-1">Reported Statewide</p>
+                </div>
+            </div>
+            <div class="mt-16 bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-2xl sm:text-3xl font-bold text-center mb-2" style="color: #2A553A;">Primary Conflict Hotspots</h3>
+                <p class="text-center text-md max-w-2xl mx-auto mb-8">While the conflict is widespread, certain divisions bear the highest burden, with Tenkasi emerging as a critical new hotspot requiring urgent intervention.</p>
+                <div class="chart-container">
+                    <canvas id="conflictZonesChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="solution" class="mb-20">
+            <h2 class="text-3xl font-bold text-center mb-2" style="color: #2A553A;">Our Solution: The VanamMate Integrated Loop</h2>
+            <p class="text-center text-lg max-w-3xl mx-auto mb-12">Project VanamMate shifts from reactive measures to a proactive, integrated, and predictive HEC management system designed to foster coexistence through a continuous cycle of sensing, analysis, and response.</p>
+            <div class="bg-white rounded-lg shadow-md p-8 flex flex-col md:flex-row items-center justify-around space-y-8 md:space-y-0">
+                <div class="flow-circle text-white" style="background-color: #2A553A;">SENSE<br/>(Perception)</div>
+                <div class="flow-arrow" style="color: #4CAF50;">&#8594;</div>
+                <div class="flow-circle text-white" style="background-color: #4CAF50;">ANALYZE<br/>(Intelligence)</div>
+                <div class="flow-arrow" style="color: #FF9F1C;">&#8594;</div>
+                <div class="flow-circle text-white" style="background-color: #FF9F1C;">RESPOND<br/>(Action)</div>
+            </div>
+        </section>
+
+        <section id="technology" class="mb-20">
+            <h2 class="text-3xl font-bold text-center mb-2" style="color: #2A553A;">A Multi-Layered Technology Architecture</h2>
+            <p class="text-center text-lg max-w-3xl mx-auto mb-12">The system is built on a robust architecture that ensures high accuracy and delivers the right information to the right people at the right time.</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div class="bg-white rounded-lg shadow-md p-6 flex flex-col justify-center">
+                    <h3 class="text-2xl sm:text-3xl font-bold text-center mb-8" style="color: #2A553A;">Technology Stack Composition</h3>
+                    <img src="unnamed.jpg" alt="VanamMate Technology Stack" class="w-full h-auto rounded-lg">
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-2xl sm:text-3xl font-bold text-center mb-8" style="color: #2A553A;">Tiered Alert System</h3>
+                    <ul class="space-y-6">
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center text-white font-bold text-lg" style="background-color: #FF6B6B;">T1</div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold">Tier 1: Internal Alert</h4>
+                                <p class="text-gray-600">Instant, real-time alerts with location and visuals sent directly to TNFD staff and on-ground Elephant Response Teams (ERTs).</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center text-white font-bold text-lg" style="background-color: #FF9F1C;">T2</div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold">Tier 2: Targeted Public Alert</h4>
+                                <p class="text-gray-600">Geofenced SMS and automated voice calls sent to registered residents within a specific radius of the elephant's location.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center text-white font-bold text-lg" style="background-color: #4CAF50;">T3</div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold">Tier 3: General Public Alert</h4>
+                                <p class="text-gray-600">Remote activation of GSM-based alert lights in village centers, bus stops, and along key roads for broad visual warnings.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="prediction" class="mb-20">
+            <h2 class="text-3xl font-bold text-center mb-2" style="color: #2A553A;">The Power of Prediction & Community</h2>
+            <p class="text-center text-lg max-w-3xl mx-auto mb-12">The strategic core is an AI-powered Conflict Risk Model (CRM) that transforms HEC management from reactive to proactive, with community engagement as its cornerstone.</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                     <h3 class="text-2xl sm:text-3xl font-bold text-center mb-8" style="color: #2A553A;">Data Inputs for Conflict Risk Model</h3>
+                     <div class="space-y-4">
+                        <div class="data-input-card" style="border-color: #2A553A;">
+                            <p class="text-4xl mb-2">🏔️</p>
+                            <h4 class="font-bold text-lg">Static Landscape Data</h4>
+                            <p class="text-sm text-gray-600">Topography, forest boundaries, slope, and water body locations.</p>
+                        </div>
+                        <div class="data-input-card" style="border-color: #4CAF50;">
+                            <p class="text-4xl mb-2">🌿</p>
+                            <h4 class="font-bold text-lg">Dynamic Environmental Data</h4>
+                            <p class="text-sm text-gray-600">Satellite-derived vegetation health (NDVI) and local crop calendars.</p>
+                        </div>
+                        <div class="data-input-card" style="border-color: #FF9F1C;">
+                            <p class="text-4xl mb-2">📜</p>
+                            <h4 class="font-bold text-lg">Historical HEC Data</h4>
+                            <p class="text-sm text-gray-600">Geotagged records of all past conflict incidents from TNFD databases.</p>
+                        </div>
+                        <div class="data-input-card" style="border-color: #FF6B6B;">
+                            <p class="text-4xl mb-2">🐘</p>
+                            <h4 class="font-bold text-lg">Live Elephant Movement Data</h4>
+                            <p class="text-sm text-gray-600">Real-time data from the sensor network and GPS collars.</p>
+                        </div>
+                     </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-2xl sm:text-3xl font-bold text-center mb-8" style="color: #2A553A;">Community Co-Management Model</h3>
+                     <div class="text-center">
+                        <div class="inline-block p-4 rounded-full text-white font-bold text-xl mb-6" style="background-color: #2A553A;">
+                            Elephant Response Team (ERT)
+                        </div>
+                        <p class="text-gray-600 mb-6">Composed of trained members from local communities, ERTs are the human interface of the system, leveraging invaluable traditional ecological knowledge.</p>
+                        <div class="grid grid-cols-2 gap-4 text-left">
+                            <div class="bg-green-50 p-3 rounded-lg"><span class="font-bold" style="color: #4CAF50;">&#10003;</span> Verify Alerts</div>
+                            <div class="bg-green-50 p-3 rounded-lg"><span class="font-bold" style="color: #4CAF50;">&#10003;</span> System Maintenance</div>
+                            <div class="bg-green-50 p-3 rounded-lg"><span class="font-bold" style="color: #4CAF50;">&#10003;</span> Support TNFD</div>
+                            <div class="bg-green-50 p-3 rounded-lg"><span class="font-bold" style="color: #4CAF50;">&#10003;</span> Community Liaison</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="roadmap" class="mb-20">
+            <h2 class="text-3xl font-bold text-center mb-2" style="color: #2A553A;">Roadmap & Projected Impact</h2>
+            <p class="text-center text-lg max-w-3xl mx-auto mb-12">Our phased rollout is designed to validate the model, ensure seamless integration, and demonstrate measurable impact before scaling.</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                 <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-2xl sm:text-3xl font-bold text-center mb-8" style="color: #2A553A;">12-Month Implementation Timeline</h3>
+                    <img src="12.jpg" alt="VanamMate Project Implementation Timeline" class="w-full h-auto rounded-lg">
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-2xl sm:text-3xl font-bold text-center mb-8" style="color: #2A553A;">Key Performance Indicator Targets</h3>
+                    <div class="chart-container">
+                        <canvas id="kpiChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="budget" class="mb-12">
+            <h2 class="text-3xl font-bold text-center mb-2" style="color: #2A553A;">Financials & The Ask</h2>
+            <p class="text-center text-lg max-w-3xl mx-auto mb-12">We are seeking a strategic partnership and pilot phase funding to co-create a future of human-elephant coexistence.</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div class="flex items-center justify-center">
+                    <div class="kpi-card w-full max-w-sm" style="border-top: 8px solid #2A553A;">
+                        <p class="text-lg font-semibold text-gray-600">Total Pilot Phase Cost</p>
+                        <div class="text-6xl font-black my-2" style="color: #2A553A;">₹10.77L</div>
+                        <p class="text-sm text-gray-500">For initial 6-month deployment and calibration in Tenkasi.</p>
+                    </div>
+                </div>
+                 <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-2xl sm:text-3xl font-bold text-center mb-8" style="color: #2A553A;">Pilot Phase Budget Allocation</h3>
+                    <div class="chart-container">
+                        <canvas id="budgetChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer id="contact" class="bg-gray-800 text-white">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center">
+            <p class="font-bold text-xl">Project VanamMate</p>
+            <p class="mt-2">
+                <a href="mailto:vanammate@gmail.com" class="hover:underline inline-flex items-center">
+                    <img src="Gmail-Logo-2013.png" alt="Gmail" class="w-5 h-5 mr-2">
+                    vanammate@gmail.com
+                </a>
+            </p>
+            <p class="mt-2">
+                <a href="https://wa.me/917358085171" target="_blank" class="hover:underline inline-flex items-center">
+                    <img src="WhatsApp.svg.webp" alt="WhatsApp" class="w-5 h-5 mr-2">
+                    7358085171
+                </a>
+            </p>
+            <p class="mt-1">Building a safer future for communities and a secure future for elephants in Tamil Nadu.</p>
+        </div>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+
+    mobileMenuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+        mobileMenuButton.querySelector('svg.block').classList.toggle('hidden');
+        mobileMenuButton.querySelector('svg.hidden').classList.toggle('hidden');
+    });
+    
+    mobileMenuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+            mobileMenuButton.querySelector('svg.block').classList.remove('hidden');
+            mobileMenuButton.querySelector('svg.hidden').classList.add('hidden');
+        });
+    });
+
+    const PALETTE = {
+        dark_green: '#2A553A',
+        medium_green: '#4CAF50',
+        light_green: '#81C784',
+        orange: '#FF9F1C',
+        red: '#FF6B6B',
+        white: '#FFFFFF',
+        gray: '#6B7280'
+    };
+
+    function wrapLabels(label, maxWidth) {
+        if (typeof label !== 'string' || label.length <= maxWidth) {
+            return label;
+        }
+        const words = label.split(' ');
+        let lines = [];
+        let currentLine = '';
+        for (const word of words) {
+            if ((currentLine + word).length > maxWidth) {
+                lines.push(currentLine.trim());
+                currentLine = '';
+            }
+            currentLine += word + ' ';
+        }
+        lines.push(currentLine.trim());
+        return lines;
+    }
+
+    const tooltipTitleCallback = (tooltipItems) => {
+        const item = tooltipItems[0];
+        let label = item.chart.data.labels[item.dataIndex];
+        if (Array.isArray(label)) {
+            return label.join(' ');
+        }
+        return label;
+    };
+
+    const defaultChartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    font: {
+                        family: "'Inter', sans-serif",
+                        size: 12,
+                        color: PALETTE.dark_green
+                    }
+                }
+            },
+            tooltip: {
+                callbacks: {
+                    title: tooltipTitleCallback
+                },
+                bodyFont: {
+                    family: "'Inter', sans-serif",
+                },
+                titleFont: {
+                    family: "'Inter', sans-serif",
+                }
+            }
+        },
+        scales: {
+            x: {
+                ticks: {
+                    font: {
+                        family: "'Inter', sans-serif",
+                    },
+                    color: PALETTE.dark_green
+                },
+                grid: {
+                    display: false
+                }
+            },
+            y: {
+                ticks: {
+                    font: {
+                        family: "'Inter', sans-serif",
+                    },
+                    color: PALETTE.dark_green
+                },
+                beginAtZero: true
+            }
+        }
+    };
+
+    const conflictZonesData = {
+        labels: ['Hosur Division', 'Coimbatore Division', wrapLabels('Tenkasi District (Emerging Hotspot)', 16)],
+        datasets: [{
+            label: 'Major HEC Incidents',
+            data: [4408, 1996, 903],
+            backgroundColor: [PALETTE.red, PALETTE.orange, PALETTE.medium_green],
+            borderColor: PALETTE.white,
+            borderWidth: 2
+        }]
+    };
+    new Chart(document.getElementById('conflictZonesChart'), {
+        type: 'bar',
+        data: conflictZonesData,
+        options: { ...defaultChartOptions, indexAxis: 'y' }
+    });
+
+    const kpiData = {
+        labels: [wrapLabels('Human Fatalities Reduction', 16), wrapLabels('Crop/Property Damage Reduction', 16)],
+        datasets: [{
+            label: 'Target Reduction (%)',
+            data: [75, 50],
+            backgroundColor: [PALETTE.red, PALETTE.orange],
+            barThickness: 50,
+        }]
+    };
+    new Chart(document.getElementById('kpiChart'), {
+        type: 'bar',
+        data: kpiData,
+        options: {
+            ...defaultChartOptions,
+            scales: {
+                ...defaultChartOptions.scales,
+                y: {
+                    ...defaultChartOptions.scales.y,
+                    title: {
+                        display: true,
+                        text: 'Reduction (%)',
+                        color: PALETTE.dark_green
+                    }
+                }
+            }
+        }
+    });
+
+    const budgetData = {
+        labels: ['Hardware', 'Software & AI', 'Personnel & Training', 'Contingency'],
+        datasets: [{
+            label: 'Budget Allocation',
+            data: [39, 29, 19, 13],
+            backgroundColor: [PALETTE.dark_green, PALETTE.medium_green, PALETTE.light_green, PALETTE.gray],
+            borderColor: PALETTE.white,
+            borderWidth: 4,
+            hoverOffset: 4
+        }]
+    };
+    new Chart(document.getElementById('budgetChart'), {
+        type: 'doughnut',
+        data: budgetData,
+        options: {
+            ...defaultChartOptions,
+            cutout: '60%',
+        }
+    });
+});
+</script>
+</body>
+</html>
